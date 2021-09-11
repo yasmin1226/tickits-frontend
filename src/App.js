@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
+import Home from "./components/home";
+import LogIn from "./components/login";
+import NavBar from "./components/navbar";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Register from "./components/register";
+import Tickets from "./components/tickets";
+import AddEditForm from "./components/addEditTicket";
+class App extends Component {
+  render() {
+    return (
+      <>
+        <main className="container">
+          <BrowserRouter>
+            <NavBar />
+            <switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/home" exact component={Home} />
+              <Route path="/register" component={Register} />
+              <Route path="/login" component={LogIn} />
+              <Route
+                path="/add-edit-ticket/:id"
+                render={(props) => <AddEditForm {...props} />}
+              />
+            </switch>
+          </BrowserRouter>
+        </main>
+      </>
+    );
+  }
 }
 
 export default App;
