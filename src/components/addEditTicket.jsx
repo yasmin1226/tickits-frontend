@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 const AddEditForm = (props) => {
-    const id = props.match.params.id;
+    const role = localStorage.getItem("role")
 
     console.log(props)
     const [stateTicket, setStateTicket] = useState({
-        id: "",
+        // id: "",
         title: "",
         status: ""
-
-
     })
+    // if (role === 'customer') {
+    //     console.log("role is cu")
+    //     let state = { ...stateTicket }
+    //     delete state.status;
+    //     setStateTicket(state)
+    //     console.log("state", state)
+    //     console.log("state", stateTicket)
+    // }
     useEffect(() => {
         async function fetchData() {
+            const id = props.match.params.id;
             if (id !== 'new') {
                 try {
                     console.log("try")
@@ -21,7 +28,15 @@ const AddEditForm = (props) => {
                     //clone
                     let state = { ...stateTicket };
                     // //edit
-                    setStateTicket(data.data.ticket);
+                    if (role === 'customer') {
+                        setStateTicket(state.title = data.data.ticket.title);
+
+                    }
+                    else {
+
+                        setStateTicket(state.title = data.data.ticket.title);
+                        setStateTicket(state.status = data.data.ticket.status);
+                    }
 
 
 
@@ -54,18 +69,32 @@ const AddEditForm = (props) => {
         //add
         if (props.match.params.id === 'new') {
             const obj = { ...stateTicket }
+            delete obj.status;
+
             console.log(obj)
-            await axios.post("http://localhost:4000/api/ticket/", obj, config)
+            try {
+                await axios.post("http://localhost:4000/api/ticket/", obj, config)
+                window.location.href = "/home"
+
+
+            } catch (err) {
+                console.log(err)
+            }
             //  console.log('submit')
         } else {
             //edit
             const obj = { ...stateTicket }
-            //delete id
-            delete obj.id;
-            await axios.patch("http://localhost:4000/api/ticket/" + stateTicket._id, obj, config)
+            delete obj.status;
+            try {
+
+                await axios.patch("http://localhost:4000/api/ticket/" + props.match.params.id, obj, config)
+
+                window.location.href = "/home"
+            } catch (err) {
+                console.log("er", err)
+            }
 
         }
-        window.location.href = "/home"
     }
     const handleChange = e => {
         let state = { ...stateTicket }
@@ -77,7 +106,7 @@ const AddEditForm = (props) => {
     return (
         <>
             <h1>{props.match.params.id === 'new' ? 'Add' : "Edit"} Ticket</h1>
-            {(id !== "new" && stateTicket.title) && < form onSubmit={handleSubmit}>
+            < form onSubmit={handleSubmit}>
 
 
                 <div className="form-group">
@@ -85,14 +114,14 @@ const AddEditForm = (props) => {
                     <input type="text" className="form-control" id="title" name="title" value={stateTicket.title} onChange={handleChange} />
                 </div>
 
-                <div className="form-group">
+                {role !== 'customer' && <div className="form-group">
                     <label htmlFor="Status">status</label>
                     <input type="text" className="form-control" id="status" name="status" value={stateTicket.status} onChange={handleChange} />
                 </div>
-
-                <button type="submit" className="btn btn-primary">{props.match.params.id === 'new' ? 'Add' : "Edit"}</button>
+                }
+                <button type="submit" className="btn btn-primary mt-2">{props.match.params.id === 'new' ? 'Add' : "Edit"}</button>
             </form>
-            }
+
         </>
     );
 }

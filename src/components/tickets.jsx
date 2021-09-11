@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 const Tickets = (props) => {
-    console.log("tikets pro", props.history)
+    const role = localStorage.getItem("role")
     const [stateTickets, setStateTickets] = useState([])
     useEffect(() => {
         async function fetchData() {
@@ -14,14 +14,11 @@ const Tickets = (props) => {
 
                 }
             };
-            const role = localStorage.getItem("role")
-            console.log("token", token);
             if (role === 'customer') {
 
                 try {
 
                     const { data } = await axios.get("http://localhost:4000/api/ticket/myTickets", config)
-                    console.log("Mytickets", data.data.tickets)
                     // const tikets=
                     //clone
                     let state = [...stateTickets];
@@ -37,14 +34,18 @@ const Tickets = (props) => {
             } else {
                 try {
                     const { data } = await axios.get("http://localhost:4000/api/ticket/", config)
-                    console.log("tickets", data.data)
+                    let state = [...stateTickets];
+
+                    //edit
+                    setStateTickets(state = data.data.tickets)
+
+                    setStateTickets(state);
 
                 } catch (err) {
                     console.log(err)
                 }
 
             }
-            // console.log(id)
         }
         fetchData();
     }, []);//
@@ -76,8 +77,8 @@ const Tickets = (props) => {
     return (
         <>
             <h1>Tickets</h1>
-            <button className="btn btn-primary mb-4"
-                onClick={() => window.location.href = '/add-edit-ticket'}>Add</button>
+            {role == 'customer' && <button className="btn btn-primary mb-4"
+                onClick={() => window.location.href = '/add-edit-ticket/new'}>Add</button>}
             <table className="table">
                 <thead>
                     <tr>
