@@ -40,7 +40,7 @@ const LogIn = (props) => {
                 console.log("user", data.data.user)
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("role", data.data.user.role);
-                props.history.replace('/')
+                props.history.replace('/home')
                 if (data.data.user.role === 'admin') {
                     window.location.href = "http://localhost:4000/admin"
 

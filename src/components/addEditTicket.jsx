@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 const AddEditForm = (props) => {
+    const id = props.match.params.id;
+
     console.log(props)
     const [stateTicket, setStateTicket] = useState({
         id: "",
@@ -11,20 +13,23 @@ const AddEditForm = (props) => {
     })
     useEffect(() => {
         async function fetchData() {
-            const id = props.match.params.id;
             if (id !== 'new') {
+                try {
+                    console.log("try")
+                    const { data } = await axios.get("http://localhost:4000/api/ticket/" + id)
+                    console.log("res", data.data.ticket);
+                    //clone
+                    let state = { ...stateTicket };
+                    // //edit
+                    setStateTicket(data.data.ticket);
 
-                const res = await axios.get("http://localhost:4000/api/ticket/" + id)
-                console.log("res", res);
-                //clone
-                let state = { ...stateTicket };
-                // //edit
-                setStateTicket(state.title = stateTicket.title);
-                setStateTicket(state.status = stateTicket.status);
 
 
-                // //set state
-                setStateTicket(state)
+                    // //set state
+                    setStateTicket(state)
+                } catch (err) {
+                    console.log("err", err)
+                }
 
             }
             console.log(id)
@@ -32,7 +37,7 @@ const AddEditForm = (props) => {
         fetchData();
     }, []);
 
-
+    console.log("tiket", stateTicket)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,7 +62,7 @@ const AddEditForm = (props) => {
             const obj = { ...stateTicket }
             //delete id
             delete obj.id;
-            await axios.patch("http://localhost:4000/api/ticket/" + stateTicket.id, obj, config)
+            await axios.patch("http://localhost:4000/api/ticket/" + stateTicket._id, obj, config)
 
         }
         window.location.href = "/home"
@@ -71,8 +76,8 @@ const AddEditForm = (props) => {
 
     return (
         <>
-            <h1>{props.match.params.id === 'new' ? 'Add' : "Edit"} Product</h1>
-            <form onSubmit={handleSubmit}>
+            <h1>{props.match.params.id === 'new' ? 'Add' : "Edit"} Ticket</h1>
+            {(id !== "new" && stateTicket.title) && < form onSubmit={handleSubmit}>
 
 
                 <div className="form-group">
@@ -87,7 +92,7 @@ const AddEditForm = (props) => {
 
                 <button type="submit" className="btn btn-primary">{props.match.params.id === 'new' ? 'Add' : "Edit"}</button>
             </form>
-
+            }
         </>
     );
 }
