@@ -7,6 +7,7 @@ import NavBar from "./components/navbar";
 import Register from "./components/register";
 import Tickets from "./components/tickets";
 import AddEditForm from "./components/addEditTicket";
+import Ticket from "./components/ticket";
 class App extends Component {
   render() {
     return (
@@ -22,6 +23,10 @@ class App extends Component {
               <Route
                 path="/add-edit-ticket/:id"
                 render={(props) => <AddEditForm {...props} />}
+              />
+              <Route
+                path="/ticket/:id"
+                render={(props) => <Ticket {...props} />}
               />
             </switch>
           </BrowserRouter>

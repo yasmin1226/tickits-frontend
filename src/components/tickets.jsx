@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from "react-router-dom"
 import axios from 'axios'
 const Tickets = (props) => {
     const role = localStorage.getItem("role")
@@ -89,6 +90,7 @@ const Tickets = (props) => {
                         <th scope="col">Last updated</th>
                         <th scope="col">Update</th>
                         <th scope="col">Delete</th>
+                        <th scope="col"></th>
 
 
 
@@ -98,16 +100,26 @@ const Tickets = (props) => {
                 <tbody>
                     {stateTickets.length && stateTickets.map((ticket) =>
                         <tr key={ticket._id}>
-                            <td scope="col">{ticket._id}</td>
+                            <td scope="col">
+                                {ticket._id}</td>
                             <td scope="col">{ticket.title}</td>
                             <td scope="col">{ticket.status}</td>
                             <td scope="col">{ticket.updatedAt}</td>
                             <td scope="col">
-                                <input type="button" className="btn btn-primary" value="UpDdate" onClick={() => window.location.href = `/add-edit-ticket/${ticket._id}`} />
+                                <NavLink className="btn btn-primary" to={`/add-edit-ticket/${ticket._id}`} tabIndex="-1" > Edit</NavLink>
                             </td>
                             <td scope="col">
 
                                 <input type="button" className="btn btn-danger" value="Delete" onClick={() => deleteTicket(ticket._id)} />
+
+                            </td>
+                            <td scope="col">
+
+                                <NavLink className="nav-link" to={`/ticket/${ticket._id}`} tabIndex="-1" > More</NavLink>
+
+                                {/* <input type="button" className="btn btn-danger" value="More" onClick={() => {
+                                    window.location.href = `/ticket/${ticket._id}`
+                                }} /> */}
 
                             </td>
                         </tr>
